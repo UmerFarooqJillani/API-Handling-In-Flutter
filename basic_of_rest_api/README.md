@@ -72,3 +72,81 @@ https://api.example.com/users/1
         - **Header:** Access + Refresh tokens (Google login)
     - HTTPS
         - **Header:** Encrypted connection (https://)
+## Beginner: Quick REST service + manual JSON parsing <br>
+**Example API response (GET /stories):**
+```dart
+[
+  {
+    "id": "1",
+    "title": "The Clever Fox",
+    "body": "Once upon a time..."
+  },
+  {
+    "id": "2",
+    "title": "The Brave Mouse",
+    "body": "A little mouse..."
+  }
+]
+```
+**Manual model (simple):**
+```dart
+// lib/features/stories/data/models/story_dto.dart
+class StoryDto {
+  final String id;
+  final String title;
+  final String body;
+
+  StoryDto({required this.id, required this.title, required this.body});
+
+  factory StoryDto.fromJson(Map<String, dynamic> json) {
+    return StoryDto(
+      id: json['id'].toString(),
+      title: json['title'] ?? '',
+      body: json['body'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'body': body,
+  };
+}
+```
+**Repository (using http package):**
+```dart
+// lib/features/stories/data/story_repository.dart
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'models/story_dto.dart';
+
+class StoryRepository {
+  final String baseUrl;
+  StoryRepository({required this.baseUrl});
+
+  Future<List<StoryDto>> fetchStories({int page = 1}) async {
+    final uri = Uri.parse('$baseUrl/stories?page=$page');
+    final res = await http.get(uri, headers: {'Accept': 'application/json'});
+
+    if (res.statusCode == 200) {
+      final List body = json.decode(res.body);
+      return body.map((e) => StoryDto.fromJson(e as Map<String, dynamic>)).toList();
+    } else {
+      throw Exception('Failed to load stories. Status: ${res.statusCode}');
+    }
+  }
+}
+```
+**Use with Riverpod (simple FutureProvider):**
+```dart
+final storyRepoProvider = Provider((ref) => StoryRepository(baseUrl: 'https://api.example.com'));
+
+final storiesProvider = FutureProvider<List<StoryDto>>((ref) {
+  final repo = ref.watch(storyRepoProvider);
+  return repo.fetchStories();
+});
+```
+## Professional: Dio + json_serializable (or Freezed) + typed exceptions + repository interface
+
+
+
