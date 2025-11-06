@@ -392,3 +392,4 @@ dio.interceptors.add(
   - Adds the token
   - Logs the request/response
   - Handles errors globally
+--- 
