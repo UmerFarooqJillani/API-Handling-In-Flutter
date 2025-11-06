@@ -302,4 +302,93 @@ try {
   }
 }
 ```
+## Interceptors (The `Middleware` of Networking)
+- Think of interceptors as “checkpoints” in Dio’s pipeline:
+  - Before a request is sent (you can modify it)
+  - After a response is received (you can process or log it)
+  - When an error occurs (you can retry or handle gracefully)
+```dart
+dio.interceptors.add(
+  InterceptorsWrapper(
+    onRequest: (options, handler) {
+      print('➡️ Sending request: ${options.method} ${options.path}');
+      options.headers['Authorization'] = 'Bearer token_here';
+      return handler.next(options);
+    },
+    onResponse: (response, handler) {
+      print('✅ Got response: ${response.statusCode}');
+      return handler.next(response);
+    },
+    onError: (error, handler) {
+      print('❌ Error: ${error.message}');
+      return handler.next(error);
+    },
+  ),
+);
+```
+## Why it’s powerful: 
+- When you build an app, you make many API calls login, get user, fetch posts, etc.
+Each call might need:
+  - The same headers (like an auth token)
+  - Logging (to print requests/responses for debugging)
+  - Error handling (like checking for 401 Unauthorized)
+- If you handle these things inside every API call, you’ll repeat the same code 10+ times.
+- **Interceptors fix** this problem by letting you handle those things once in one place.
+Then, Dio automatically applies it to every request.<br>
+**Without interceptors:**
+- Here you repeat the token logic and error handling everywhere.
+```dart
+final dio = Dio();
 
+Future<Response> getUser() async {
+  final token = await getTokenFromStorage();
+  return dio.get(
+    'https://api.example.com/user',
+    options: Options(
+      headers: {'Authorization': 'Bearer $token'},
+    ),
+  );
+}
+
+Future<Response> getPosts() async {
+  final token = await getTokenFromStorage();
+  return dio.get(
+    'https://api.example.com/posts',
+    options: Options(
+      headers: {'Authorization': 'Bearer $token'},
+    ),
+  );
+}
+```
+**With interceptors:**
+```dart
+final dio = Dio();
+
+// Add interceptor once
+dio.interceptors.add(
+  InterceptorsWrapper(
+    onRequest: (options, handler) async {
+      final token = await getTokenFromStorage();
+      options.headers['Authorization'] = 'Bearer $token';
+      print('➡️ Sending request: ${options.uri}');
+      return handler.next(options);
+    },
+    onResponse: (response, handler) {
+      print('✅ Response: ${response.statusCode}');
+      return handler.next(response);
+    },
+    onError: (error, handler) {
+      print('❌ Error: ${error.response?.statusCode}');
+      if (error.response?.statusCode == 401) {
+        // handle unauthorized (maybe refresh token)
+      }
+      return handler.next(error);
+    },
+  ),
+);
+```
+### Now every API request automatically:
+- You don’t need to repeat that code in every API function. That’s what `centralizing all network logic` means.
+  - Adds the token
+  - Logs the request/response
+  - Handles errors globally
