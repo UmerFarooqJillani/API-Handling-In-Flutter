@@ -264,6 +264,6 @@ class User {
 **Run again:**
 ```bash
 flutter pub run build_runner build
-```
+``` 
 
 
