@@ -214,5 +214,56 @@ class UserService {
 final users = await UserService().fetchUsers();
 print(users.first.name);  // Prints Ali or whatever name comes from API
 ```
+## Posting Data to Server
+```dart
+final newUser = User(id: 2, name: 'Fatima', email: 'fatima@example.com');
+
+await dio.post(
+  '/users',
+  data: newUser.toJson(),  // Dart → JSON
+);
+```
+**When API responds with data:**
+```dart
+final user = User.fromJson(response.data); // JSON → Dart
+```
+## Nested Models Example
+```json
+{
+  "id": 1,
+  "name": "Ali",
+  "address": {
+    "city": "Karachi",
+    "country": "Pakistan"
+  }
+}
+```
+**Dart models:**
+```dart
+@JsonSerializable()
+class Address {
+  final String city;
+  final String country;
+
+  Address({required this.city, required this.country});
+  factory Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
+  Map<String, dynamic> toJson() => _$AddressToJson(this);
+}
+
+@JsonSerializable()
+class User {
+  final int id;
+  final String name;
+  final Address address;
+
+  User({required this.id, required this.name, required this.address});
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+```
+**Run again:**
+```bash
+flutter pub run build_runner build
+```
 
 
