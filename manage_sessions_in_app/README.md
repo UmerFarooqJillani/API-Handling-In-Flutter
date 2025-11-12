@@ -103,3 +103,6 @@ String? token = await storage.read(key: 'token');
     - Send it in headers (Authorization: Bearer token) for every private API
 4. Logout
     - Delete token from storage so user must log in again
+
+
+`A token is a unique key that the server gives after login, used to prove who the user is. We store this token using SharedPreferences or SecureStorage so that we can reuse it for future API calls without asking the user to log in again.`
