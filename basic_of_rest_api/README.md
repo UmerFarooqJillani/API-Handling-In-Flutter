@@ -390,6 +390,6 @@ dio.interceptors.add(
 ### Now every API request automatically:
 - You don’t need to repeat that code in every API function. That’s what `centralizing all network logic` means.
   - Adds the token
-  - Logs the request/response
+  - Logs the request/response. More details [click here](#)
   - Handles errors globally
 --- 
