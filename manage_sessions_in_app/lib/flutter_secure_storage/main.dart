@@ -103,7 +103,7 @@ class _SecureProfileScreenState extends State<SecureProfileScreen> {
   Future<void> fetchProfile() async {
     String? token = await storage.read(key: 'sessionToken');
 
-    var url = Uri.parse('https://reqres.in/api/users/2');
+    var url = Uri.parse('https://ticklearn.ai/api/AccountApi/details/testuser@example.com');
     var response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
