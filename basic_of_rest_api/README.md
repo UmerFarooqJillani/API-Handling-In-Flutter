@@ -390,6 +390,6 @@ dio.interceptors.add(
 ### Now every API request automatically:
 - You don’t need to repeat that code in every API function. That’s what `centralizing all network logic` means.
   - Adds the token
-  - Logs the request/response. More details [click here](#)
+  - Logs the request/response. More details [click here](https://github.com/UmerFarooqJillani/API-Handling-In-Flutter/blob/ba6fab004d1da5f873bcd4f4b9032b8925f4cdb0/Interview%20Q_A/logs.md)
   - Handles errors globally
 --- 
