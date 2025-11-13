@@ -104,5 +104,8 @@ String? token = await storage.read(key: 'token');
 4. Logout
     - Delete token from storage so user must log in again
 
+`In Flutter, we can store API tokens using either SharedPreferences (simple key-value storage) or SecureStorage (encrypted storage).`
+
+`SharedPreferences is fine for normal apps, but SecureStorage should be used when security matters, for example, when handling authentication tokens, payments, or user credentials.`
 
 `A token is a unique key that the server gives after login, used to prove who the user is. We store this token using SharedPreferences or SecureStorage so that we can reuse it for future API calls without asking the user to log in again.`
