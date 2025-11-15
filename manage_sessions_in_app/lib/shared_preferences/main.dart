@@ -93,6 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
