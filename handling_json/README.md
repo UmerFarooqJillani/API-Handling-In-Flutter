@@ -100,6 +100,8 @@ class User {
 **Then Run:**
 ```dart
 flutter pub run build_runner build
+// or
+flutter pub run build_runner build --delete-conflicting-outputs
 ```
 **And it will create a file `user_model.g.dart` automatically:**
 ```dart
@@ -264,6 +266,8 @@ class User {
 **Run again:**
 ```bash
 flutter pub run build_runner build
+// or
+flutter pub run build_runner build --delete-conflicting-outputs
 ``` 
 
 
