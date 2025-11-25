@@ -109,3 +109,68 @@ String? token = await storage.read(key: 'token');
 `SharedPreferences is fine for normal apps, but SecureStorage should be used when security matters, for example, when handling authentication tokens, payments, or user credentials.`
 
 `A token is a unique key that the server gives after login, used to prove who the user is. We store this token using SharedPreferences or SecureStorage so that we can reuse it for future API calls without asking the user to log in again.`
+
+## `flutter_secure_storage` Used to store Token
+- Under the hood, this uses:
+    - **Android:** EncryptedSharedPreferences / Keystore
+    - **iOS:** Keychain
+### Why Apps Use Two Tokens (Access Token + Refresh Token)
+- Modern apps never use only ONE token.
+- They always use two tokens because each token has a very specific job.
+### Access Token (Short-Live Token)
+- Used for: Calling APIs (e.g. /get-user, /update-profile)
+- Lifetime: Usually short (10 mins, 15 mins, 1 hour)
+- Where sent: In every API request → Authorization: Bearer <token>
+- Why short?
+    - If this token gets stolen, hacker can only use it for a small time
+    - Very safe for API calls
+    - Adds security layer
+- So, access token = key to APIs
+- But expires quickly → that’s good for security.
+### Refresh Token — Long-Live Token
+- Used for: Getting a new access token when it expires
+- Lifetime: Typically long (7 days, 30 days, 90 days)
+- Where sent: Only to /refresh endpoint
+- Stored securely: In encrypted storage (like flutter_secure_storage)
+- Never sent on every API request
+### Think of it like:
+- **Access Token** = house door key (use daily but expires)
+- **Refresh Token** = master key (kept very safe, used rarely)
+### Why NOT use access token alone?
+- If access token expires → the app will stop working instantly.
+- Example:
+    - User logs in
+    - Access token (1 hour) is saved
+    - After 1 hour → user tries to open Home screen → API says:
+    ```dart
+    401 Unauthorized → token expired
+    ```
+- Without **refresh token** → user must login again manually
+    - Bad user experience
+    - All users forced to login repeatedly
+    - Not production-ready
+### Why refresh token is needed<br>
+- When access token expires:
+    - Your app silently calls → /auth/refresh
+    - Backend returns a new access token
+    - User continues using app without knowing anything
+- This is called Silent Authentication.
+- Apps like `Facebook`, `Instagram`, `WhatsApp` all use this.
+### Example Flow (Real World)
+1. User logs in
+    - Server gives:
+        - accessToken = 1 hour
+        - refreshToken = 30 days
+2. User uses app all day:
+    - Access token is automatically refreshed every time it expires.
+3. After 30 days:
+    - Refresh token also expires → user must login again
+- **This keeps:**
+    - The app secure
+    - The user logged in smoothly
+    - Hackers unable to misuse stolen tokens
+```dart
+await _storage.write(key: _keyAccessToken, value: accessToken);
+await _storage.write(key: _keyRefreshToken, value: refreshToken);
+```
+
