@@ -112,7 +112,7 @@ A simple key-value storage for very small data.<br>
     - Lists of objects
     - Offline databases
 
-More details [click Here](manage_sessions_in_app)
+More details [click Here](https://github.com/UmerFarooqJillani/API-Handling-In-Flutter/tree/main/manage_sessions_in_app)
 
 ### **Hive:**
 
