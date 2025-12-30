@@ -91,3 +91,64 @@ With local storage → session is restored
         - Cache, local DB
     - `SQLite`  
         - Large structured data
+
+## Short Explanation of local data storage solutions:
+
+### **SharedPreferences:**
+
+A simple key-value storage for very small data.<br>
+`A tiny notebook for app settings`
+- **What you store**
+    - Login token
+    - User ID
+    - Dark mode (true/false)
+    - Language preference
+- **When to use**
+    - Data is small
+    - No lists or objects
+    - No complex logic
+- **When NOT to use**
+    - Large data
+    - Lists of objects
+    - Offline databases
+
+More details [click Here](manage_sessions_in_app)
+
+### **Hive:**
+
+A fast, lightweight local database written in pure Dart.<br>
+`A fast local storage box for app data`
+
+- **What you store**
+    - User profile
+    - API responses
+    - Cached lists
+    - App data models
+- **Why developers like `Hive`**
+    - No SQL
+    - Very fast
+    - Simple syntax
+    - Works great offline
+- **When to use**
+    - You want local storage bigger than `SharedPreferences`
+    - No complex table relations
+    - Performance matters
+
+### **SQLite:**
+
+A relational database using SQL queries.<br>
+`Excel sheets with rows, columns, and relations`
+
+- **What you store**
+    - Large datasets
+    - Data with relations (orders → users)
+    - Offline-first apps
+    - History, logs, transactions
+- **When to use**
+    - Complex data structure
+    - Relationships between data
+    - Heavy querying
+- **Why beginners avoid it**
+    - SQL required
+    - More boilerplate
+    - Harder to maintain
