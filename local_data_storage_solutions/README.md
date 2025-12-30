@@ -125,7 +125,7 @@ A fast, lightweight local database written in pure Dart.<br>
     - Cached lists
     - App data models
 - **Why developers like `Hive`**
-    - No SQL
+    - No SQL / Key-Value
     - Very fast
     - Simple syntax
     - Works great offline
@@ -149,6 +149,6 @@ A relational database using SQL queries.<br>
     - Relationships between data
     - Heavy querying
 - **Why beginners avoid it**
-    - SQL required
+    - Relational (SQL) required
     - More boilerplate
     - Harder to maintain
