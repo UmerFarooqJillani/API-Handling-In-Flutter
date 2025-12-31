@@ -469,3 +469,77 @@ App Termination
         - Clear cache
         - Re-fetch from API
         - Continue app
+
+### PART B: `Versioning in Hive`
+- Versioning means:
+    > Managing data changes safely when your app updates
+1. The biggest beginner mistake
+    - Changing model fields without thinking:
+        ```dart
+        // OLD
+        class User {
+        int id;
+        String name;
+        }
+        // NEW (BAD CHANGE)
+        class User {
+        int id;
+        String fullName; // renamed
+        }
+        ```
+    - This will **CRASH** on old devices.
+2. How Hive stores data internally
+    - Hive stores data in binary order, not by field name.
+        - **So this:**
+        ```dart
+        writer.writeInt(obj.id);
+        writer.writeString(obj.name);
+        ```
+        - **Must match exactly with:**
+        ```dart
+        reader.readInt();
+        reader.readString();
+        ```
+3. Safe model evolution rules (MEMORIZE)
+    - **Rule 1:** Never change write/read order
+        - ❌ BAD
+        ```dart
+        writer.writeString(obj.name);
+        writer.writeInt(obj.id);
+        ```
+    - **Rule 2:** Never delete fields abruptly
+        - ❌ BAD<br>
+            Remove:
+        ```dart
+        writer.writeString(obj.name);
+        ```
+    - **Rule 3:** Adding new fields is SAFE (with care)
+        - **OLD**
+        ```dart
+        writer.writeInt(obj.id);
+        writer.writeString(obj.name);
+        ```
+        - **NEW (SAFE)**
+        ```dart
+        writer.writeInt(obj.id);
+        writer.writeString(obj.name);
+        writer.writeString(obj.email); // new field
+        ```
+        - And while reading:
+        ```dart
+        final id = reader.readInt();
+        final name = reader.readString();
+        final email = reader.availableBytes > 0
+            ? reader.readString()
+            : '';
+        ```
+4. `typeId` versioning strategy (production)
+    - Rule
+        - typeId identifies the object type
+        - NOT the version
+    - Never do this
+        ```dart
+        // Keep typeId constant
+        // Handle field evolution safely
+        typeId = 1 → 2   // ❌
+        ```
